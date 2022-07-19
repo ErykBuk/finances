@@ -30,8 +30,8 @@ data = raw[['Close']] # We are only interested in close prices
 plot_size_x = round(((end_date - start_date).days/365)*6)
 plot_size_y = round(max([6*(max(data['Close'])-min(data['Close']))/1000, 1/3*plot_size_x]))
 
-#   Plotting stock prices
-plot.figure(figsize=(plot_size_x,plot_size_y))  # For Tesla stocks 2020-2022 size (12,6) would suffice.
+#   Plotting close price, we are interested in
+plot.figure(figsize=(plot_size_x,plot_size_y))
 data['Close'].plot(grid=True)
 plot.xlabel('Date')
 plot.ylabel('Close price (USD)')
@@ -57,7 +57,7 @@ def EMA(data, time):
     results.append(data[0])
     alpha = 2/(time+1)
     for i in range(1, len(data)):
-        results.append(alpha*data.Close[i] + (1-alpha)*results[i-1])
+        results.append(alpha*data['Close'][i] + (1-alpha)*results[i-1])
     '''
 
     return results
@@ -78,17 +78,17 @@ def MACD(data, a, b, c):
 
 #   Averages over 9, 12 and 26 days are most commonly used. While only the last two will be nedded,
 #   we will be able to see how averaging smooths data.
-ema9   = EMA(data.Close, 9  )
-ema12  = EMA(data.Close, 12 )
-ema26  = EMA(data.Close, 26 )
-ema69  = EMA(data.Close, 69 )
-ema100 = EMA(data.Close, 100)
+ema9   = EMA(data['Close'], 9  )
+ema12  = EMA(data['Close'], 12 )
+ema26  = EMA(data['Close'], 26 )
+ema69  = EMA(data['Close'], 69 )
+ema100 = EMA(data['Close'], 100)
 #   Here we choose 12, 26 and 9 days respectively.
-macd   = MACD(data.Close, 12, 26, 9)[0]
-signal = MACD(data.Close, 12, 26, 9)[1]
+macd   = MACD(data['Close'], 12, 26, 9)[0]
+signal = MACD(data['Close'], 12, 26, 9)[1]
 #   MACD with another characteristic times
-macdx = MACD(data.Close, 69,100,26)[0]
-signalx = MACD(data.Close, 69,100,26)[1]
+macdx = MACD(data['Close'], 69,100,26)[0]
+signalx = MACD(data['Close'], 69,100,26)[1]
 
 #   Plotting EMAs
 plot.figure(figsize=(plot_size_x,plot_size_y))
